@@ -36,6 +36,67 @@
 				<div class="header__buttons">
 					<button class="login header__btn">Login</button>
 					<button class="register header__btn">Sign Up</button>
+
+                                         <script>
+						$(document).ready(function () {
+							const saveTokenInCookie = function (token) {
+								
+								document.cookie = `token=${token};path=/;`;
+							};
+					
+							const handleResponse = function (data) {
+								console.log('Response:', data);
+								
+							};
+					
+							const handleError = function (error, action) {
+								console.error(`${action} error:`, error);
+								
+							};
+					
+							$('#loginForm').submit(function (event) {
+								event.preventDefault();
+								const username = $('#username').val();
+								const password = $('#password').val();
+					
+								$.ajax({
+									type: 'POST',
+									url: '/api/login',
+									contentType: 'application/json',
+									data: JSON.stringify({ username, password }),
+									success: function (data) {
+										handleResponse(data);
+										// Сохранение токена в cookie
+										saveTokenInCookie(data.token);
+									},
+									error: function (error) {
+										handleError(error, 'Login');
+									}
+								});
+							});
+					
+							$('#registerForm').submit(function (event) {
+								event.preventDefault();
+								const username = $('#username').val();
+								const password = $('#password').val();
+					
+								$.ajax({
+									type: 'POST',
+									url: '/api/register',
+									contentType: 'application/json',
+									data: JSON.stringify({ username, password }),
+									success: function (data) {
+										handleResponse(data);
+										
+										saveTokenInCookie(data.token);
+									},
+									error: function (error) {
+										handleError(error, 'Registration');
+									}
+								});
+							});
+						});
+					</script>
 				</div>
 				<div class="menu-icon">
 					<span></span><span></span><span></span>
